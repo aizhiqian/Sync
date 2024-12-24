@@ -1,29 +1,65 @@
-name: Sync File
+name: Sync Files
 
 on:
-  # 定时触发
-  # schedule:
+  schedule:
+    - cron: '0 2 * * *'  # 每天凌晨2点执行
     # - cron: '0 * * * *'  # 每小时的整点运行
-  # 手动触发
-  workflow_dispatch:
+  workflow_dispatch:  # 允许手动触发
 
 jobs:
   sync:
     runs-on: ubuntu-latest
+
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-    - name: Download file from URL
-      run: |
-        # curl -o jd.txt https://raw.githubusercontent.com/WeiGiegie/vpm/main/lq.snippet
+      - name: Sync Files
+        run: |
 
-    - name: Commit and push changes
-      run: |
-        git config --global user.name "GitHub Actions"
-        git config --global user.email "actions@github.com"
-        git add jd.txt
-        git commit -m "Sync jd.txt from WeiGiegie/vpm repository"
-        git push
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # 文件配置
+          # ["本地文件名"]="远程文件URL"
+          declare -A files=(
+            ["jd.txt"]="https://raw.githubusercontent.com/WeiGiegie/vpm/main/lq.snippet"
+          )
+
+          changed_files=()
+
+          # 生成README.md的文件列表
+          readme_content="### 2. 文件同步\n"
+          readme_content+="- 每天凌晨 2 点自动同步一次\n"
+          readme_content+="- 支持手动触发同步\n"
+          readme_content+="- 当前同步的文件：\n"
+
+          for local_file in "${!files[@]}"; do
+            remote_url="${files[$local_file]}"
+            readme_content+="  - [$local_file]($remote_url)\n"
+
+            echo "正在同步文件: $remote_url 到 $local_file"
+
+            # 下载临时文件
+            curl -o "temp_$local_file" "$remote_url"
+
+            # 如果是新文件或文件有更新则进行替换
+            if [ ! -f "$local_file" ] || ! cmp -s "temp_$local_file" "$local_file"; then
+              mv "temp_$local_file" "$local_file"
+              changed_files+=("$local_file")
+            else
+              rm "temp_$local_file"
+            fi
+          done
+
+          # 更新README.md
+          sed -i "/### 2\. 文件同步/,/## 自动化特性/c\\$readme_content\n\n## 自动化特性" README.md
+          git add README.md
+
+          # 提交更改
+          if [ ${#changed_files[@]} -gt 0 ] || ! git diff --cached --quiet README.md; then
+            git config --local user.name "github-actions"
+            git config --local user.email "github-actions@github.com"
+            git add "${changed_files[@]}"
+            git commit -m "Sync updates for: $(echo "${changed_files[*]}" | sed 's/ /、/g')"
+            git push
+          else
+            echo "所有文件都是最新的，无需提交。"
+          fi

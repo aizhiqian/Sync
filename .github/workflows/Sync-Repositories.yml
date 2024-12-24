@@ -15,7 +15,7 @@ jobs:
 
       - name: Sync Repositories
         run: |
-        
+
           # 仓库配置
           # ["本地目录名"]="远程仓库路径"
           declare -A repos=(
@@ -25,8 +25,16 @@ jobs:
           changed_repos=()
           original_repos=()
 
+          # 生成README.md的仓库列表
+          readme_content="### 1. 仓库同步\n"
+          readme_content+="- 每三个月 1 号自动同步一次\n"
+          readme_content+="- 支持手动触发同步\n"
+          readme_content+="- 当前同步的仓库：\n"
+
           for local_name in "${!repos[@]}"; do
             remote_path="${repos[$local_name]}"
+            readme_content+="  - [$local_name](https://github.com/$remote_path)\n"
+
             echo "正在同步 $remote_path 到 $local_name"
 
             # 同步仓库内容
@@ -43,8 +51,12 @@ jobs:
             fi
           done
 
+          # 更新README.md
+          sed -i "/### 1\. 仓库同步/,/### 2\. 文件同步/c\\$readme_content\n### 2. 文件同步" README.md
+          git add README.md
+
           # 提交更改
-          if [ ${#changed_repos[@]} -gt 0 ]; then
+          if [ ${#changed_repos[@]} -gt 0 ] || ! git diff --cached --quiet README.md; then
             git config --local user.name "github-actions"
             git config --local user.email "github-actions@github.com"
             git commit -m "Sync updates for: $(echo "${original_repos[*]}" | sed 's/ /、/g')"
