@@ -13,6 +13,8 @@
 - 每天凌晨 2 点自动同步一次
 - 支持手动触发同步
 - 当前同步的文件：
+  - [jd.txt](https://raw.githubusercontent.com/WeiGiegie/vpm/main/lq.snippet)
+
 
 ## 自动化特性
 

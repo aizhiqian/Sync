@@ -1,0 +1,13 @@
+trojan://43e5eeacbad3032bfe4c25a2f011b6b7@104.251.227.182:443?allowInsecure=1&peer=hezijiasuqi.com#%E5%85%B3%E6%B3%A8%E9%A2%91%E9%81%93t.me/GieGie777
+shadowsocks=13.112.235.194:443, method=aes-256-cfb, password=amazonskr05, fast-open=false, udp-relay=false, tag=VIP專綫（新加坡）SG, Singapore
+shadowsocks=18.179.197.216:443, method=aes-256-cfb, password=amazonskr05, fast-open=false, udp-relay=false, tag=VIP專綫（韩国）KR, Incheon
+shadowsocks=13.212.204.100:443, method=aes-256-cfb, password=amazonskr05, fast-open=false, udp-relay=false, tag=VIP專綫（日本）JP, Osaka
+shadowsocks=43.201.254.74:443, method=aes-256-cfb, password=amazonskr05, fast-open=false, udp-relay=false, tag=VIP專綫（日本）JP, Tokyo
+shadowsocks=54.202.77.81:443, method=aes-256-cfb, password=amazonskr05, fast-open=false, udp-relay=false, tag=VIP專綫（美国）HK, Los Angeles
+shadowsocks=35.92.45.179:443, method=aes-256-cfb, password=amazonskr05, fast-open=false, udp-relay=false, tag=VIP專綫（美国）US, Houston
+shadowsocks=34.216.172.180:443, method=aes-256-cfb, password=amazonskr05, fast-open=false, udp-relay=false, tag=VIP專綫（美国）US, Dallas 2
+shadowsocks=52.68.44.53:443, method=aes-256-cfb, password=amazonskr05, fast-open=false, udp-relay=false, tag=VIP專綫（香港）HK, New Territories
+shadowsocks=13.114.31.63:443, method=aes-256-cfb, password=amazonskr05, fast-open=false, udp-relay=false, tag=VIP專綫（日本）JP, Tokyo 2
+shadowsocks=13.115.231.64:443, method=aes-256-cfb, password=amazonskr05, fast-open=false, udp-relay=false, tag=VIP專綫（台湾）TW, Taipei
+shadowsocks=18.181.162.137:443, method=aes-256-cfb, password=amazonskr05, fast-open=false, udp-relay=false, tag=VIP專綫（香港）HK, Kowloon
+shadowsocks=34.211.229.86:443, method=aes-256-cfb, password=amazonskr05, fast-open=false, udp-relay=false, tag=VIP專綫（加拿大）CA, Vancouver
