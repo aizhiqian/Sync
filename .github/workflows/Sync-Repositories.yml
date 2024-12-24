@@ -1,0 +1,54 @@
+name: Sync Repositories
+
+on:
+  schedule:
+    - cron: '0 0 1 1/3 ?'  # 每三个月1号同步一次
+  workflow_dispatch:  # 允许手动触发
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Sync Repositories
+        run: |
+        
+          # 仓库配置
+          # ["本地目录名"]="远程仓库路径"
+          declare -A repos=(
+            ["IDM-Activation-Script"]="lstprjct/IDM-Activation-Script"
+          )
+
+          changed_repos=()
+          original_repos=()
+
+          for local_name in "${!repos[@]}"; do
+            remote_path="${repos[$local_name]}"
+            echo "正在同步 $remote_path 到 $local_name"
+
+            # 同步仓库内容
+            git clone --depth=1 "https://github.com/$remote_path.git" "temp_$local_name"
+            mkdir -p "$local_name"
+            rsync -av --exclude='.git/' --delete "temp_$local_name/" "$local_name/"
+            rm -rf "temp_$local_name"
+
+            # 检查更新
+            git add "$local_name/"
+            if ! git diff --cached --quiet -- "$local_name"; then
+              changed_repos+=("$local_name")
+              original_repos+=("$(echo "$remote_path" | awk -F/ '{print $2}')")
+            fi
+          done
+
+          # 提交更改
+          if [ ${#changed_repos[@]} -gt 0 ]; then
+            git config --local user.name "github-actions"
+            git config --local user.email "github-actions@github.com"
+            git commit -m "Sync updates for: $(echo "${original_repos[*]}" | sed 's/ /、/g')"
+            git push
+          else
+            echo "所有仓库都是最新的，无需提交。"
+          fi
