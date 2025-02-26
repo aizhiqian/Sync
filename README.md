@@ -8,6 +8,7 @@
 - 每三个月 1 号自动同步一次
 - 支持手动触发同步
 - 当前同步的仓库：
+  - [Awesome-Ollama-Server](https://github.com/forrany/Awesome-Ollama-Server)
   - [IDM-Activation-Script](https://github.com/lstprjct/IDM-Activation-Script)
 
 ### 2. 文件同步
