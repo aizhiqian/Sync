@@ -169,14 +169,30 @@ export default function Home() {
   // 过滤和排序服务列表
   const filteredAndSortedServices = services
     .filter(service => 
+      // 过滤掉伪装服务
+      (!service.isFake) && 
       (selectedModels.length === 0 || 
       service.models.some(model => selectedModels.includes(model)))
     )
     .sort((a, b) => {
       const multiplier = sortOrder === 'asc' ? 1 : -1;
+      
+      // 只有在有选中的模型时，才特殊处理排序
+      if (selectedModels.length > 0) {
+        // 检查服务是否包含选中的模型
+        const aHasSelectedModel = a.models.some(model => selectedModels.includes(model));
+        const bHasSelectedModel = b.models.some(model => selectedModels.includes(model));
+        
+        // 如果 a 包含选中的模型但 b 不包含，则 a 排在前面
+        if (aHasSelectedModel && !bHasSelectedModel) return -1;
+        // 如果 b 包含选中的模型但 a 不包含，则 b 排在前面
+        if (!aHasSelectedModel && bHasSelectedModel) return 1;
+      }
+      
       // 将 loading 状态的服务排在最前面
       if (a.loading && !b.loading) return -1;
       if (!a.loading && b.loading) return 1;
+      
       if (sortField === 'tps') {
         return (a.tps - b.tps) * multiplier;
       } else {
